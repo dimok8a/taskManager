@@ -1,24 +1,33 @@
 package ru.taskManager.taskManager.config
 
-import org.springframework.beans.factory.annotation.Autowired
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.authentication.AuthenticationProvider
+import org.springframework.http.HttpMethod.POST
+import org.springframework.http.HttpMethod.GET
+import org.springframework.http.HttpStatus
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.HttpStatusEntryPoint
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import ru.taskManager.taskManager.entity.Role
+import org.springframework.security.web.authentication.logout.LogoutHandler
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler
+import ru.taskManager.taskManager.entity.user.Role
 
 
 @Configuration
 @EnableWebSecurity
 class SecurityConfiguration(
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
-    @Autowired
-    private val authenticationProvider: AuthenticationProvider
+    private val authenticationProvider: DaoAuthenticationProvider,
+    private val logoutHandler: LogoutHandler
 ) {
 
 
@@ -27,11 +36,12 @@ class SecurityConfiguration(
         http
             .securityMatcher("/api/**")
             .csrf { obj: AbstractHttpConfigurer<*, *> -> obj.disable() }
+            .exceptionHandling { it.authenticationEntryPoint(HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)) }
             .authorizeHttpRequests { authorize ->
                 authorize
-                    .requestMatchers("/api/user/login").permitAll()
-                    .requestMatchers("/api/user/register").permitAll()
-                    .requestMatchers("/api/user/**").hasRole(Role.USER.name)
+                    .requestMatchers(POST, "/api/user/login").anonymous()
+                    .requestMatchers(POST, "/api/user/register").anonymous()
+                    .requestMatchers(GET, "/api/user/**").hasRole(Role.USER.name)
                     .anyRequest()
                     .authenticated()
             }
@@ -44,9 +54,16 @@ class SecurityConfiguration(
                 jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter::class.java
             )
+            .logout {
+                it
+                    .logoutUrl( "/api/user/logout")
+                    .addLogoutHandler(logoutHandler)
+                    .logoutSuccessHandler(LogoutSuccessHandler { request: HttpServletRequest?, response: HttpServletResponse?, authentication: Authentication? -> SecurityContextHolder.clearContext() })
+            }
 
         return http.build()
     }
+
 
 //    @Bean
 //    fun corsConfigurationSource(): CorsConfigurationSource {

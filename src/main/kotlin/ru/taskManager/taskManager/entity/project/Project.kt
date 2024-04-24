@@ -1,8 +1,10 @@
-package ru.taskManager.taskManager.entity
+package ru.taskManager.taskManager.entity.project
 
 import jakarta.persistence.*
 import org.hibernate.annotations.CreationTimestamp
 import org.jetbrains.annotations.NotNull
+import ru.taskManager.taskManager.entity.GenericEntity
+import ru.taskManager.taskManager.entity.user.User
 import java.util.Date
 
 @Entity
@@ -17,10 +19,10 @@ class Project(
     @CreationTimestamp
     @Column(nullable = false)
     val createdAt: Date,
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     var participants: MutableSet<User>? = null,
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     var owner: User,
-    @OneToMany(mappedBy = "project", cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "project", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     var boards: MutableList<Board>? = null
 ) : GenericEntity()

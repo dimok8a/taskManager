@@ -8,7 +8,7 @@ import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import ru.taskManager.taskManager.entity.User
+import ru.taskManager.taskManager.entity.user.User
 import java.security.Key
 import java.util.*
 import java.util.function.Function

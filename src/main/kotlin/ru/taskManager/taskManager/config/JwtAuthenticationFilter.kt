@@ -6,15 +6,14 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.jetbrains.annotations.NotNull
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 import org.springframework.web.servlet.HandlerExceptionResolver
-import ru.taskManager.taskManager.entity.User
 import ru.taskManager.taskManager.service.JwtService
 import ru.taskManager.taskManager.service.UserService
+import ru.taskManager.taskManager.service.impl.UserServiceImpl
 import java.io.IOException
 
 
@@ -41,10 +40,10 @@ class JwtAuthenticationFilter(
             val jwt = authHeader.substring(7)
             val nickname = jwtService.extractUsername(jwt)
             val authentication = SecurityContextHolder.getContext().authentication
-            println(nickname)
             if (nickname != null && authentication == null) {
                 val userDetails = userDetailsService.getUserByNickName(nickname)
-                if (jwtService.isTokenValid(jwt, userDetails)) {
+                val isTokenValid = userDetails.token == jwt
+                if (jwtService.isTokenValid(jwt, userDetails) && isTokenValid) {
                     val authToken = UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,
@@ -58,6 +57,7 @@ class JwtAuthenticationFilter(
             filterChain.doFilter(request, response)
         } catch (exception: Exception) {
             handlerExceptionResolver.resolveException(request, response, null, exception)
+            filterChain.doFilter(request, response)
         }
     }
 }

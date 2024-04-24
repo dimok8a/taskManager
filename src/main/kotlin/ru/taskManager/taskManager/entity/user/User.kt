@@ -1,16 +1,15 @@
-package ru.taskManager.taskManager.entity
+package ru.taskManager.taskManager.entity.user
 
 import jakarta.persistence.*
 import org.jetbrains.annotations.NotNull
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
+import ru.taskManager.taskManager.entity.GenericEntity
+import java.util.Collections
 
 @Entity
 @Table(name="users")
 class User (
-    @Id
-    @GeneratedValue
-    override var id: Long?,
     @NotNull
     @Column(nullable = false, unique = true)
     var nickname : String,
@@ -18,8 +17,6 @@ class User (
     @Column(nullable = false)
     var firstname : String? = null,
 
-    @Enumerated(EnumType.STRING)
-    var role: Role? = null,
 
     @NotNull
     @Column(nullable = false)
@@ -27,10 +24,20 @@ class User (
     @NotNull
     @Column(nullable = false)
     var hash : String? = null,
-//    var token : String? = null
+
+    var token : String? = null,
+
+    @Enumerated(EnumType.STRING)
+    var role: Role? = Role.USER,
+
     ) : GenericEntity(), UserDetails {
-    override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
-        return mutableListOf();
+
+    @Id
+    @GeneratedValue
+    override var id: Long? = null
+
+    override fun getAuthorities(): List<GrantedAuthority> {
+        return role?.getAuthorities() ?: Collections.emptyList();
     }
 
     override fun getPassword(): String {

@@ -1,11 +1,26 @@
 package ru.taskManager.taskManager.service.impl
 
-import ru.taskManager.taskManager.entity.User
+import org.springframework.stereotype.Service
+import ru.taskManager.taskManager.entity.user.User
 import ru.taskManager.taskManager.repository.UserRepository
-import java.util.Optional
+import ru.taskManager.taskManager.service.UserService
 
-interface UserServiceImpl {
-    val repository: UserRepository
-    fun getAllUsers() : List<User>
-    fun getUserByNickName(nickname: String): User
+@Service
+class UserServiceImpl(
+    override val repository: UserRepository,
+) : UserService {
+
+    override fun getAllUsers(): List<User> {
+        return repository.findAll()
+    }
+
+    override fun getUserByNickName(nickname: String): User {
+        return repository.findByNickname(nickname).get()
+    }
+
+
+//    fun authenticate(user: User): AuthenticationResponse {
+//
+//    }
+
 }
