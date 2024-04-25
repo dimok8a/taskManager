@@ -45,13 +45,13 @@ data class BoardData(
     val id: Long,
     val name: String,
     val sections: List<SectionData>,
-    val description: String? = ""
+    val description: String = ""
 ){
     constructor(board: Board): this(
         board.id!!,
         board.name!!,
         board.sections!!.map { SectionData(it) },
-        board.description
+        board.description?: ""
     )
 }
 
