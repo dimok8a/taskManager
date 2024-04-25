@@ -13,13 +13,13 @@ import ru.taskManager.taskManager.service.AuthenticationService
 @RestController
 @RequestMapping("/api/user")
 class UserController (
-    private val userServiceImpl1: UserServiceImpl,
+    private val userService: UserServiceImpl,
     private val authenticationService: AuthenticationService
 ){
 
     @GetMapping("/")
     fun getUsers(): List<User> {
-        return userServiceImpl1.getAllUsers()
+        return userService.getAllUsers()
     }
 
     @PostMapping("/login")
@@ -30,7 +30,7 @@ class UserController (
         return try {
             ResponseEntity.ok().body(authenticationService.authenticate(request))
         } catch (e: Exception) {
-            ResponseEntity.status(401).body(ErrorResponse("Wrong nickname or password"))
+            ResponseEntity.status(401).body(ErrorResponse(e.message))
         }
     }
 

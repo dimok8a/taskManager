@@ -11,7 +11,7 @@ class Board(
     @GeneratedValue
     override var id: Long? = null,
     @NotNull
-    var name: String? = null,
+    var name: String? = "Доска",
     var description: String? = null,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")

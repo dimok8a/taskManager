@@ -4,6 +4,7 @@ import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
+import ru.taskManager.taskManager.api.request.NewProjectRequest
 import ru.taskManager.taskManager.entity.user.User
 import ru.taskManager.taskManager.repository.UserRepository
 import ru.taskManager.taskManager.service.JwtService
@@ -22,7 +23,8 @@ class TaskManagerApplication {
 			val firstUser = User("Dima", "Dmitry", "Okishev", "202cb962ac59075b964b07152d234b70")
 			firstUser.token = jwtService.generateToken(firstUser)
 			service.save(firstUser)
-			projectService.createNewProject()
+			val projectRequest = NewProjectRequest("Проект 1", "Описание проекта")
+			projectService.createNewProject(projectRequest, firstUser)
 			println(firstUser.token)
 		}
 	}

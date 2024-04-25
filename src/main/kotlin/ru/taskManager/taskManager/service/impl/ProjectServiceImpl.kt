@@ -2,6 +2,7 @@ package ru.taskManager.taskManager.service.impl
 
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
+import ru.taskManager.taskManager.api.request.NewProjectRequest
 import ru.taskManager.taskManager.entity.project.Board
 import ru.taskManager.taskManager.entity.project.ESectionType
 import ru.taskManager.taskManager.entity.project.Project
@@ -25,24 +26,29 @@ class ProjectServiceImpl(
         return repository.findAllByParticipantsIn(mutableSetOf(user))
     }
 
-    fun getProjectByUserAndProjectId(user: User, projectId: Long): Project {
+    fun getProjectByUserAndProjectId(user: User, projectId: Long): Project? {
         return repository.findByParticipantsInAndId(mutableSetOf(user), projectId).orElse(null)
     }
 
     @Transactional
-    override fun createNewProject(): Project {
-        val owner = userRepository.findById(1).get()
+    override fun createNewProject(request: NewProjectRequest, user: User): Project {
         val newProject = Project(
-            name = "Проект",
-            owner = owner,
-            participants = mutableSetOf(owner),
+            name = request.name,
+            owner = user,
+            participants = mutableSetOf(user),
             createdAt = Date(),
+            description = request.description,
         )
-        val newBoard = Board(name = "Доска", project = newProject)
-        boardRepository.save(newBoard)
+        val newBoard = Board(project = newProject, sections = mutableListOf())
         for (sectionType in ESectionType.entries)
-            sectionRepository.save(Section(type = sectionType, board = newBoard))
+        {
+            val newSection = Section(type = sectionType, board = newBoard)
+            sectionRepository.save(newSection)
+            newBoard.sections!!.add(newSection)
+        }
         newProject.boards = mutableListOf(newBoard)
-        return repository.save(newProject)
+        repository.save(newProject)
+        boardRepository.save(newBoard)
+        return newProject
     }
 }
