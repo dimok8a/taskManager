@@ -1,6 +1,7 @@
 package ru.taskManager.taskManager.repository
 
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.transaction.annotation.Transactional
 import ru.taskManager.taskManager.entity.project.Project
 import ru.taskManager.taskManager.entity.user.User
 import java.util.*

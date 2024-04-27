@@ -16,5 +16,9 @@ class Section(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
-    val board: Board
-) : GenericEntity()
+    val board: Board,
+
+    @OneToMany(mappedBy = "section", fetch = FetchType.EAGER)
+    val tasks: MutableList<Task> = mutableListOf(),
+
+    ) : GenericEntity()

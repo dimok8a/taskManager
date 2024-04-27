@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import ru.taskManager.taskManager.entity.GenericEntity
+import ru.taskManager.taskManager.entity.project.Task
 import java.util.Collections
 
 @Entity
@@ -29,6 +30,12 @@ class User (
 
     @Enumerated(EnumType.STRING)
     var role: Role? = Role.USER,
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "executor")
+    var tasks: MutableSet<Task> = mutableSetOf(),
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "inspector")
+    var tasksToCheck: MutableSet<Task> = mutableSetOf(),
 
     ) : GenericEntity(), UserDetails {
 

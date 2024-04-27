@@ -1,4 +1,4 @@
-package ru.taskManager.taskManager.api.request
+package ru.taskManager.taskManager.api.request.user
 
 data class RegisterRequest(
     val nickname : String,

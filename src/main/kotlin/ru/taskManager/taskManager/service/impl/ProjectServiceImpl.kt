@@ -1,32 +1,30 @@
 package ru.taskManager.taskManager.service.impl
 
 import jakarta.transaction.Transactional
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import ru.taskManager.taskManager.api.request.NewProjectRequest
-import ru.taskManager.taskManager.entity.project.Board
-import ru.taskManager.taskManager.entity.project.ESectionType
-import ru.taskManager.taskManager.entity.project.Project
-import ru.taskManager.taskManager.entity.project.Section
+import ru.taskManager.taskManager.api.request.project.ChangeProjectRequest
+import ru.taskManager.taskManager.api.request.project.NewProjectRequest
+import ru.taskManager.taskManager.entity.project.*
 import ru.taskManager.taskManager.entity.user.User
-import ru.taskManager.taskManager.repository.BoardRepository
-import ru.taskManager.taskManager.repository.ProjectRepository
-import ru.taskManager.taskManager.repository.SectionRepository
-import ru.taskManager.taskManager.repository.UserRepository
+import ru.taskManager.taskManager.repository.*
+import ru.taskManager.taskManager.service.BoardService
 import ru.taskManager.taskManager.service.ProjectService
+import ru.taskManager.taskManager.service.ProjectValidationService
 import java.util.*
 
 @Service
 class ProjectServiceImpl(
     override val repository: ProjectRepository,
-    val userRepository: UserRepository,
-    val boardRepository: BoardRepository,
-    val sectionRepository: SectionRepository
+    private val taskRepository: TaskRepository,
+    private val boardService: BoardService,
+    private val projectValidationService: ProjectValidationService
 ) : ProjectService {
     override fun getAllUserProjects(user: User): List<Project> {
         return repository.findAllByParticipantsIn(mutableSetOf(user))
     }
 
-    fun getProjectByUserAndProjectId(user: User, projectId: Long): Project? {
+    override fun getProjectByUserAndProjectId(user: User, projectId: Long): Project? {
         return repository.findByParticipantsInAndId(mutableSetOf(user), projectId).orElse(null)
     }
 
@@ -39,16 +37,28 @@ class ProjectServiceImpl(
             createdAt = Date(),
             description = request.description,
         )
-        val newBoard = Board(project = newProject, sections = mutableListOf())
-        for (sectionType in ESectionType.entries)
-        {
-            val newSection = Section(type = sectionType, board = newBoard)
-            sectionRepository.save(newSection)
-            newBoard.sections!!.add(newSection)
-        }
-        newProject.boards = mutableListOf(newBoard)
         repository.save(newProject)
-        boardRepository.save(newBoard)
+        boardService.createDefaultBoard(newProject)
         return newProject
+    }
+
+    override fun changeProjectData(request: ChangeProjectRequest, user: User, project: Project): Project {
+        if (request.name != null)
+            project.name = request.name
+        if (request.description != null)
+            project.description = request.description
+        repository.save(project)
+        return project
+    }
+
+    override fun getProjectById(projectId: Long): Project? {
+        return repository.findByIdOrNull(projectId)
+    }
+
+    override fun deleteProject(user:User, projectId: Long) {
+        val project = getProjectById(projectId)?: throw Exception("Project id was not transmitted!")
+        if (projectValidationService.checkIfUserHasProject(user, project))
+            return repository.deleteById(projectId)
+        throw Exception("У указанного пользователя нет переданного проекта")
     }
 }

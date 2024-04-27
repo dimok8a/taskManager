@@ -1,5 +1,7 @@
 package ru.taskManager.taskManager.config
 
+import org.hibernate.SessionFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
@@ -38,6 +40,8 @@ class ApplicationConfig (
     fun passwordEncoder(): PasswordEncoder {
         return BCryptPasswordEncoder()
     }
+
+
 
     @Bean
     @Throws(Exception::class)
