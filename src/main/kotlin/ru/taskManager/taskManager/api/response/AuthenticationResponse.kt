@@ -5,9 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 data class AuthenticationResponse
     (
-    @JsonProperty("access_token")
+    @JsonProperty("accessToken")
     val accessToken: String? = null,
     @JsonProperty("id")
     val id: Long? = null
-    )
-{}
+)

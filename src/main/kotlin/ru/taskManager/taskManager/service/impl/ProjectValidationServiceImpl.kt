@@ -10,7 +10,10 @@ import ru.taskManager.taskManager.service.ProjectValidationService
 @Service
 class ProjectValidationServiceImpl(override val repository: ProjectRepository) : ProjectValidationService {
     override fun checkIfUserHasProject(user: User, project: Project): Boolean {
-        return repository.findByParticipantsInAndId(mutableSetOf(user), project.id?:throw Exception("Project id was not transmitted")).isPresent
+        return repository.findByParticipantsInAndId(
+            mutableSetOf(user),
+            project.id ?: throw Exception("Project id was not transmitted")
+        ).isPresent
     }
 
     override fun getProjectById(projectId: Long): Project? {

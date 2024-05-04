@@ -16,7 +16,6 @@ import ru.taskManager.taskManager.service.BoardService
 class BoardController(
     val service: BoardService
 ) {
-    // Get user's board by id
     @GetMapping("/{id}")
     fun getFullBoardInformation(@PathVariable id: Long): ResponseEntity<*> {
         try {
@@ -24,7 +23,8 @@ class BoardController(
             if (authentication != null && authentication.isAuthenticated) {
                 val userDetails = authentication.principal as User
                 val foundBoard = service.getBoardByUserAndBoardId(userDetails, id)
-                if (foundBoard == null) return ResponseEntity.status(404).body(ErrorResponse("У пользователя не нашлось указанной доски"))
+                    ?: return ResponseEntity.status(404)
+                        .body(ErrorResponse("У пользователя не нашлось указанной доски"))
                 return ResponseEntity.ok(BoardData(foundBoard))
             }
             return ResponseEntity.status(401).body(ErrorResponse("Не авторизованный пользователь"))
@@ -33,7 +33,6 @@ class BoardController(
         }
     }
 
-    // Create new board
     @PostMapping("/")
     fun createNewBoard(
         @RequestBody
@@ -41,7 +40,7 @@ class BoardController(
     ): ResponseEntity<*> {
         try {
             val authentication = SecurityContextHolder.getContext().authentication
-            if (authentication != null && authentication.isAuthenticated){
+            if (authentication != null && authentication.isAuthenticated) {
                 val userDetails = authentication.principal as User
                 val newBoard = service.createNewBoard(request, userDetails)
                 return ResponseEntity.ok().body(BoardData(newBoard))
@@ -52,7 +51,6 @@ class BoardController(
         }
     }
 
-    // Change board data
     @PutMapping("/{id}")
     fun changeBoardData(
         @PathVariable id: Long,
@@ -61,12 +59,12 @@ class BoardController(
     ): ResponseEntity<*> {
         try {
             val authentication = SecurityContextHolder.getContext().authentication
-            if (authentication != null && authentication.isAuthenticated){
-                if (!request.isEmpty())
-                {
+            if (authentication != null && authentication.isAuthenticated) {
+                if (!request.isEmpty()) {
                     val userDetails = authentication.principal as User
                     val foundBoard = service.getBoardByUserAndBoardId(userDetails, id)
-                        ?: return ResponseEntity.status(404).body(ErrorResponse("У пользователя не нашлось указанной доски"))
+                        ?: return ResponseEntity.status(404)
+                            .body(ErrorResponse("У пользователя не нашлось указанной доски"))
                     val changedBoard = service.changeBoardData(request, userDetails, foundBoard)
                     return ResponseEntity.ok().body(BoardData(changedBoard))
                 }
@@ -78,14 +76,13 @@ class BoardController(
         }
     }
 
-    // Delete board by id
     @DeleteMapping("/{id}")
     fun deleteBoard(
         @PathVariable id: Long
-    ) : ResponseEntity<*> {
+    ): ResponseEntity<*> {
         try {
             val authentication = SecurityContextHolder.getContext().authentication
-            if (authentication != null && authentication.isAuthenticated){
+            if (authentication != null && authentication.isAuthenticated) {
                 val userDetails = authentication.principal as User
                 service.deleteBoard(userDetails, id)
                 return ResponseEntity.ok().body(SuccessResponse("Доска была успешно удалена"))

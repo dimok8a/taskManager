@@ -1,7 +1,6 @@
 package ru.taskManager.taskManager.entity.project
 
 import jakarta.persistence.*
-import org.jetbrains.annotations.NotNull
 import ru.taskManager.taskManager.entity.GenericEntity
 
 
@@ -11,14 +10,17 @@ class Section(
     @GeneratedValue
     override var id: Long? = null,
 
-    @NotNull
     val type: ESectionType,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     val board: Board,
 
-    @OneToMany(mappedBy = "section", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "section", fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
     val tasks: MutableList<Task> = mutableListOf(),
 
-    ) : GenericEntity()
+    ) : GenericEntity() {
+        fun dismissTask(task: Task) {
+            tasks.remove(task)
+        }
+    }

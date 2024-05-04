@@ -2,20 +2,21 @@ package ru.taskManager.taskManager.api.user
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import ru.taskManager.taskManager.api.response.ErrorResponse
 import ru.taskManager.taskManager.api.request.user.LoginRequest
 import ru.taskManager.taskManager.api.request.user.RegisterRequest
+import ru.taskManager.taskManager.api.response.ErrorResponse
 import ru.taskManager.taskManager.entity.user.User
-import ru.taskManager.taskManager.service.impl.UserServiceImpl
 import ru.taskManager.taskManager.service.AuthenticationService
+import ru.taskManager.taskManager.service.UserService
+import ru.taskManager.taskManager.service.impl.UserServiceImpl
 
 
 @RestController
 @RequestMapping("/api/user")
-class UserController (
-    private val userService: UserServiceImpl,
+class UserController(
+    private val userService: UserService,
     private val authenticationService: AuthenticationService
-){
+) {
 
     @GetMapping("/")
     fun getUsers(): List<User> {

@@ -4,8 +4,8 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpMethod.POST
 import org.springframework.http.HttpMethod.GET
+import org.springframework.http.HttpMethod.POST
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -56,7 +56,7 @@ class SecurityConfiguration(
             )
             .logout {
                 it
-                    .logoutUrl( "/api/user/logout")
+                    .logoutUrl("/api/user/logout")
                     .addLogoutHandler(logoutHandler)
                     .logoutSuccessHandler(LogoutSuccessHandler { request: HttpServletRequest?, response: HttpServletResponse?, authentication: Authentication? -> SecurityContextHolder.clearContext() })
             }

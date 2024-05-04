@@ -1,7 +1,5 @@
 package ru.taskManager.taskManager.config
 
-import org.hibernate.SessionFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
@@ -15,9 +13,9 @@ import ru.taskManager.taskManager.repository.UserRepository
 
 
 @Configuration
-class ApplicationConfig (
+class ApplicationConfig(
     private val repository: UserRepository
-){
+) {
 
     @Bean
     fun userDetailsService(): UserDetailsService {
@@ -40,7 +38,6 @@ class ApplicationConfig (
     fun passwordEncoder(): PasswordEncoder {
         return BCryptPasswordEncoder()
     }
-
 
 
     @Bean

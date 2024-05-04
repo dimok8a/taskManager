@@ -2,9 +2,9 @@ package ru.taskManager.taskManager.service.impl
 
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.stereotype.Service
-import ru.taskManager.taskManager.api.response.AuthenticationResponse
 import ru.taskManager.taskManager.api.request.user.LoginRequest
 import ru.taskManager.taskManager.api.request.user.RegisterRequest
+import ru.taskManager.taskManager.api.response.AuthenticationResponse
 import ru.taskManager.taskManager.entity.user.User
 import ru.taskManager.taskManager.repository.UserRepository
 import ru.taskManager.taskManager.service.AuthenticationService
@@ -29,11 +29,12 @@ class AuthenticationServiceImpl(
     override fun register(registerRequest: RegisterRequest): AuthenticationResponse {
         val foundUser = repository.findByNickname(registerRequest.nickname).orElse(null)
         if (foundUser !== null) throw Exception("Пользователь с переданным никнеймом уже существует")
-        val newUser = User(registerRequest.nickname, registerRequest.firstname, registerRequest.lastname, registerRequest.hash)
+        val newUser =
+            User(registerRequest.nickname, registerRequest.firstname, registerRequest.lastname, registerRequest.hash)
         return AuthenticationResponse(refreshUserToken(newUser), newUser.id)
     }
 
-    private fun md5(input:String): String {
+    private fun md5(input: String): String {
         val md = MessageDigest.getInstance("MD5")
         return BigInteger(1, md.digest(input.toByteArray())).toString(16).padStart(32, '0')
     }

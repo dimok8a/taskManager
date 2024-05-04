@@ -1,41 +1,36 @@
 package ru.taskManager.taskManager.entity.user
 
 import jakarta.persistence.*
-import org.jetbrains.annotations.NotNull
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import ru.taskManager.taskManager.entity.GenericEntity
 import ru.taskManager.taskManager.entity.project.Task
-import java.util.Collections
+import java.util.*
 
 @Entity
-@Table(name="users")
-class User (
-    @NotNull
+@Table(name = "users")
+class User(
     @Column(nullable = false, unique = true)
-    var nickname : String,
-    @NotNull
+    var nickname: String,
     @Column(nullable = false)
-    var firstname : String? = null,
+    var firstname: String? = null,
 
 
-    @NotNull
     @Column(nullable = false)
-    var lastname : String? = null,
-    @NotNull
+    var lastname: String? = null,
     @Column(nullable = false)
-    var hash : String? = null,
+    var hash: String? = null,
 
-    var token : String? = null,
+    var token: String? = null,
 
     @Enumerated(EnumType.STRING)
     var role: Role? = Role.USER,
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "executor")
-    var tasks: MutableSet<Task> = mutableSetOf(),
+    var tasks: MutableList<Task> = mutableListOf(),
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "inspector")
-    var tasksToCheck: MutableSet<Task> = mutableSetOf(),
+    var tasksToCheck: MutableList<Task> = mutableListOf(),
 
     ) : GenericEntity(), UserDetails {
 
@@ -44,11 +39,11 @@ class User (
     override var id: Long? = null
 
     override fun getAuthorities(): List<GrantedAuthority> {
-        return role?.getAuthorities() ?: Collections.emptyList();
+        return role?.getAuthorities() ?: Collections.emptyList()
     }
 
     override fun getPassword(): String {
-       return ""
+        return ""
     }
 
     override fun getUsername(): String {

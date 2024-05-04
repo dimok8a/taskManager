@@ -1,7 +1,7 @@
 package ru.taskManager.taskManager.entity
 
-import java.io.Serializable
 import jakarta.persistence.MappedSuperclass
+import java.io.Serializable
 
 @MappedSuperclass
 abstract class GenericEntity(
@@ -15,9 +15,7 @@ abstract class GenericEntity(
 
         other as GenericEntity
 
-        if (id != other.id) return false
-
-        return true
+        return id == other.id
     }
 
     override fun hashCode(): Int {

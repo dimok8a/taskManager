@@ -13,8 +13,7 @@ import ru.taskManager.taskManager.repository.UserRepository
 class LogoutService
     (
     private val userRepository: UserRepository
-    )
-    : LogoutHandler {
+) : LogoutHandler {
     override fun logout(
         request: HttpServletRequest,
         response: HttpServletResponse,
@@ -27,8 +26,7 @@ class LogoutService
             }
             val jwt = authHeader.substring(7)
             val userByToken = userRepository.findByToken(jwt).orElse(null)
-            if (userByToken != null)
-            {
+            if (userByToken != null) {
                 userByToken.token = ""
                 userRepository.save(userByToken)
             }

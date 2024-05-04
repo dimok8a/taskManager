@@ -1,7 +1,7 @@
 package ru.taskManager.taskManager.entity.user
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority
-import java.util.Collections
+import java.util.*
 import java.util.stream.Collectors
 
 enum class Role(

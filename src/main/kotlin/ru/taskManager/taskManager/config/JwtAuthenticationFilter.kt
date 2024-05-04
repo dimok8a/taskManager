@@ -1,10 +1,8 @@
 package ru.taskManager.taskManager.config
 
 import jakarta.servlet.FilterChain
-import jakarta.servlet.ServletException
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import org.jetbrains.annotations.NotNull
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
@@ -13,8 +11,6 @@ import org.springframework.web.filter.OncePerRequestFilter
 import org.springframework.web.servlet.HandlerExceptionResolver
 import ru.taskManager.taskManager.service.JwtService
 import ru.taskManager.taskManager.service.UserService
-import ru.taskManager.taskManager.service.impl.UserServiceImpl
-import java.io.IOException
 
 
 @Component
@@ -25,11 +21,10 @@ class JwtAuthenticationFilter(
 ) : OncePerRequestFilter() {
 
 
-    @Throws(ServletException::class, IOException::class)
     override fun doFilterInternal(
-        @NotNull request: HttpServletRequest,
-        @NotNull response: HttpServletResponse,
-        @NotNull filterChain: FilterChain
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        filterChain: FilterChain
     ) {
         val authHeader = request.getHeader("Authorization")
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
