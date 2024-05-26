@@ -34,6 +34,7 @@ class SecurityConfiguration(
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http
+            .cors{}
             .securityMatcher("/api/**")
             .csrf { obj: AbstractHttpConfigurer<*, *> -> obj.disable() }
             .exceptionHandling { it.authenticationEntryPoint(HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)) }

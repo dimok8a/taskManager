@@ -32,6 +32,28 @@ class TaskController(
         }
     }
 
+    @GetMapping("/all")
+    fun getAllUserTasks(): ResponseEntity<*> {
+        try {
+            val authentication = SecurityContextHolder.getContext().authentication
+            if (authentication != null && authentication.isAuthenticated) {
+                val userDetails = authentication.principal as User
+
+                val allExecutorTasks = service.getAllExecutorTasks(userDetails)
+                val userExecutorTaskResponse = UserTasksResponse()
+                allExecutorTasks.forEach{userExecutorTaskResponse.addNewTask(it)}
+
+                val allInspectorTasks = service.getAllInspectorTasks(userDetails)
+                val userInspectorTaskResponse = UserTasksResponse()
+                allInspectorTasks.forEach{userInspectorTaskResponse.addNewTask(it)}
+                return ResponseEntity.ok(AllUserTasksResponse(userInspectorTaskResponse, userExecutorTaskResponse))
+            }
+            return ResponseEntity.status(401).body(ErrorResponse("Не авторизованный пользователь"))
+        } catch (e: Exception) {
+            return ResponseEntity.status(500).body(ErrorResponse("Что-то пошло не так"))
+        }
+    }
+
     @GetMapping("/todo")
     fun getExecutorTasks(): ResponseEntity<*> {
         try {
@@ -39,8 +61,9 @@ class TaskController(
             if (authentication != null && authentication.isAuthenticated) {
                 val userDetails = authentication.principal as User
                 val allTasks = service.getAllExecutorTasks(userDetails)
-                val allTasksData = allTasks.map { TaskShortData(it) }
-                return ResponseEntity.ok(UserTasksResponse(allTasksData))
+                val userTaskResponse = UserTasksResponse()
+                allTasks.forEach{userTaskResponse.addNewTask(it)}
+                return ResponseEntity.ok(userTaskResponse)
             }
             return ResponseEntity.status(401).body(ErrorResponse("Не авторизованный пользователь"))
         } catch (e: Exception) {
@@ -55,8 +78,9 @@ class TaskController(
             if (authentication != null && authentication.isAuthenticated) {
                 val userDetails = authentication.principal as User
                 val allTasks = service.getAllInspectorTasks(userDetails)
-                val allTasksData = allTasks.map { TaskShortData(it) }
-                return ResponseEntity.ok(UserTasksResponse(allTasksData))
+                val userTaskResponse = UserTasksResponse()
+                allTasks.forEach{userTaskResponse.addNewTask(it)}
+                return ResponseEntity.ok(userTaskResponse)
             }
             return ResponseEntity.status(401).body(ErrorResponse("Не авторизованный пользователь"))
         } catch (e: Exception) {
@@ -73,8 +97,8 @@ class TaskController(
             val authentication = SecurityContextHolder.getContext().authentication
             if (authentication != null && authentication.isAuthenticated) {
                 val userDetails = authentication.principal as User
-                val newBoard = service.createNewTask(request, userDetails)
-                return ResponseEntity.ok().body(TaskData(newBoard))
+                val newTask = service.createNewTask(request, userDetails)
+                return ResponseEntity.ok().body(TaskData(newTask))
             }
             return ResponseEntity.status(401).body(ErrorResponse("Не авторизованный пользователь"))
         } catch (e: Exception) {

@@ -101,7 +101,8 @@ data class TaskData(
     val createdAt: Date,
     val executor: ParticipantData?,
     val inspector: ParticipantData?,
-    val section: SectionShortData
+    val section: SectionShortData,
+    val participants: List<ParticipantData>
 ) {
     constructor(task: Task) : this(
         task.id ?: throw NullPointerException("Task id is null"),
@@ -110,12 +111,35 @@ data class TaskData(
         task.createdAt,
         task.executor?.let { ParticipantData(it) },
         task.inspector?.let { ParticipantData(it) },
-        SectionShortData(task.section)
+        SectionShortData(task.section),
+        task.section.board.project.participants.map { ParticipantData(it) },
     )
 }
 
+data class AllUserTasksResponse(
+    val tasksToCheck: UserTasksResponse,
+    val tasksToExecute: UserTasksResponse
+)
+
 data class UserTasksResponse(
-    val tasks: List<TaskShortData>
+    var tasksWithProjects: List<TasksWithProject> = listOf()
+) {
+   fun addNewTask(task: Task) {
+       val newTask = TaskShortData(task)
+       val taskProject = task.section.board.project
+       val taskProjectData = ProjectShortData(taskProject)
+       val foundTaskWithProject = tasksWithProjects.find{it.project == taskProjectData}
+       if (foundTaskWithProject == null) {
+           tasksWithProjects += TasksWithProject(taskProjectData, listOf(newTask))
+       } else {
+           foundTaskWithProject.tasks += newTask
+       }
+   }
+}
+
+data class TasksWithProject(
+    val project: ProjectShortData,
+    var tasks: List<TaskShortData>
 )
 
 data class TaskShortData(

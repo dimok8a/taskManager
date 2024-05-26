@@ -1,0 +1,22 @@
+export const GET_PROJECTS: string = "/api/project/"
+export const GET_PROJECT: string = "/api/project/"
+export const CREATE_PROJECT: string = "/api/project/"
+
+export const CREATE_TASK: string = "/api/task/"
+export const GET_TASK: string = "/api/task/"
+export const CHANGE_TASK: string = "/api/task/"
+export const TAKE_TASK_ON_EXECUTION: string = "/api/task/take/"
+export const CHECK_TASK: string = "/api/task/check/"
+export const REJECT_TASK: string = "/api/task/reject/"
+export const COMPLETE_TASK: string = "/api/task/complete/"
+export const GET_ALL_USER_TASKS: string = "/api/task/all"
+export const ADD_USER_TO_PROJECT: string = "/api/project/addUser/"
+
+export const GET_BOARD: string = "/api/board/"
+export const CREATE_BOARD: string = "/api/board/"
+
+export const GET_USER_DATA: string = "/api/user/"
+export const CHANGE_USER_DATA: string = "/api/user/"
+export const LOGOUT: string = "/api/user/logout"
+export const REGISTRATION: string = "/api/user/register"
+export const LOGIN: string = "/api/user/login"
