@@ -1,9 +1,9 @@
 package ru.taskManager.taskManager.api.request.project
 
 data class AddUserToProjectRequest (
-    val newUserId: Long
+    val newUserNickname: String
 ) {
     fun isEmpty(): Boolean {
-        return newUserId == 0L
+        return newUserNickname == ""
     }
 }

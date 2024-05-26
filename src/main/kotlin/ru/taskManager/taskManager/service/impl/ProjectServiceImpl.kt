@@ -67,7 +67,7 @@ class ProjectServiceImpl(
     }
 
     override fun addUserToProject(request: AddUserToProjectRequest, user: User, project: Project) {
-        val newUser = userService.getUserById(request.newUserId)?: throw Exception("Не удалось найти приглашаемого пользователя")
+        val newUser = userService.getUserByNickName(request.newUserNickname)?: throw Exception("Не удалось найти приглашаемого пользователя")
         if (projectValidationService.checkIfUserHasProject(newUser, project)) throw Exception("Приглашаемый пользователь уже в проекте")
         if (!projectValidationService.checkIfUserHasProject(user, project)) throw Exception("Пользователь сам не состоит в указанном проекте")
         project.participants.add(newUser)
