@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:myDb
+    username: test
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database: h2
+    database-platform: org.hibernate.dialect.H2Dialect
+  h2:
+    console:
+      enabled: true
+
+application:
+  security:
+    jwt:
+      secret-key: 3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007b
+      expiration: 86400000 # a day
+      refresh-token:
+        expiration: 604800000 # 7 days
