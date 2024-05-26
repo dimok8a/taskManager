@@ -1,5 +1,6 @@
 package ru.taskManager.taskManager.api.response
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 import ru.taskManager.taskManager.entity.project.Board
 import ru.taskManager.taskManager.entity.project.Project
